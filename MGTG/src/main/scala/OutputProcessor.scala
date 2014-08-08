@@ -57,14 +57,6 @@ class OutputProcessor(inputProcessor: InputProcessor, romanToDecimal: RomanToDec
     intergalasticInput.toString()
   }
 
-  def combineIntergalasticInputsToOneString(intergalasticInputs: Array[String]): String = {
-    val combinedString = new StringBuilder
-    intergalasticInputs.map(intergalasticInput => {
-      combinedString.append(intergalasticInput)
-    })
-    combinedString.toString()
-  }
-
   def calculatehowMuchisValue() = {
     val mappings = inputProcessor.outputValueOfUnits
     mappings.map(mapping => {
