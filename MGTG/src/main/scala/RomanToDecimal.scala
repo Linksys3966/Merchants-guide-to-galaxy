@@ -13,73 +13,43 @@ class RomanToDecimal {
   def convertRomanToDecimal(romanString: String): Int = {
     var decimal: Int = 0
     var previousvalue: Int = 0
+
+    def checkSubstractionLogic(currentvalue: Int) = {
+      if (currentvalue > previousvalue) {
+        decimal += currentvalue - (2 * previousvalue)
+      }
+      else {
+        decimal = decimal + currentvalue
+      }
+      previousvalue = currentvalue
+    }
+
+
     romanString.map(romanCharacter => {
       romanCharacter match {
         case 'I' => {
           val currentvalue = romanDecimalPairs(romanCharacter.toString)
-          if (currentvalue > previousvalue) {
-            decimal += currentvalue - (2 * previousvalue)
-          }
-          else {
-            decimal = decimal + currentvalue
-          }
-          previousvalue = currentvalue
+          checkSubstractionLogic(currentvalue)
         }
         case 'V' =>
           val currentvalue = romanDecimalPairs(romanCharacter.toString)
-          if (currentvalue > previousvalue) {
-            decimal += currentvalue - (2 * previousvalue)
-          }
-          else {
-            decimal += currentvalue
-          }
-          previousvalue = currentvalue
+          checkSubstractionLogic(currentvalue)
         case 'X' =>
           val currentvalue = romanDecimalPairs(romanCharacter.toString)
-          if (currentvalue > previousvalue) {
-            decimal += currentvalue - (2 * previousvalue)
-          }
-          else {
-            decimal += currentvalue
-          }
-          previousvalue = currentvalue
+          checkSubstractionLogic(currentvalue)
         case 'L' =>
           val currentvalue = romanDecimalPairs(romanCharacter.toString)
-          if (currentvalue > previousvalue) {
-            decimal += currentvalue - (2 * previousvalue)
-          }
-          else {
-            decimal += currentvalue
-          }
-          previousvalue = currentvalue
+          checkSubstractionLogic(currentvalue)
         case 'C' =>
           val currentvalue = romanDecimalPairs(romanCharacter.toString)
-          if (currentvalue > previousvalue) {
-            decimal += currentvalue - (2 * previousvalue)
-          }
-          else {
-            decimal += currentvalue
-          }
-          previousvalue = currentvalue
+          checkSubstractionLogic(currentvalue)
         case 'D' =>
           val currentvalue = romanDecimalPairs(romanCharacter.toString)
-          if (currentvalue > previousvalue) {
-            decimal += previousvalue - (2 * currentvalue)
-          }
-          else {
-            decimal += currentvalue
-          }
-          previousvalue = currentvalue
+          checkSubstractionLogic(currentvalue)
         case 'M' =>
           val currentvalue = romanDecimalPairs(romanCharacter.toString)
-          if (currentvalue > previousvalue) {
-            decimal += currentvalue - (2 * previousvalue)
-          }
-          else {
-            decimal += currentvalue
-          }
-          previousvalue = currentvalue
-        case _=>println("Please Enter a Valid Roman Input")
+          checkSubstractionLogic(currentvalue)
+        case _ => println("Please Enter a Valid Roman Input")
       }
     })
     decimal

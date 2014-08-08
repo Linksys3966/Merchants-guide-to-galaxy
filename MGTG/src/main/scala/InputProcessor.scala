@@ -5,12 +5,11 @@ import scala.util.matching.Regex
 
 class InputProcessor {
 
-  var elementToRomanMapping = new mutable.HashMap[String, String]()
-  var mixedToCreditsMapping = new mutable.HashMap[String, String]()
-  var missingElementValues = new mutable.HashMap[String, String]()
-  var outputValueOfUnits = new mutable.HashMap[String, String]()
-  var outputValueOfCredits = new mutable.HashMap[String, String]()
-  var invalidQueries = new ListBuffer[String]
+  val elementToRomanMapping = new mutable.HashMap[String, String]()
+  val mixedToCreditsMapping = new mutable.HashMap[String, String]()
+  val missingElementValues = new mutable.HashMap[String, String]()
+  val outputValueOfUnits = new mutable.HashMap[String, String]()
+  val outputValueOfCredits = new mutable.HashMap[String, String]()
 
   def readDataFromFileAndStoreMappings(fileName: String): Unit = {
     var input = new ListBuffer[String]()
