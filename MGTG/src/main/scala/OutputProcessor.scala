@@ -2,8 +2,8 @@ import scala.util.matching.Regex
 
 class OutputProcessor(inputProcessor: InputProcessor, romanToDecimal: RomanToDecimal) {
 
-  def readFile() {
-    inputProcessor.readFromFile("/Users/vivekpatil/Data.txt")
+  def readFileAndStoreMappings() {
+    inputProcessor.readDataFromFileAndStoreMappings("/Users/vivekpatil/Data.txt")
   }
 
   def calculateMissingValues() = {
@@ -79,7 +79,7 @@ class OutputProcessor(inputProcessor: InputProcessor, romanToDecimal: RomanToDec
     question.map(ques => {
       print(ques + " ")
     })
-    print(answer)
+    print("is "+answer)
     println()
   }
 

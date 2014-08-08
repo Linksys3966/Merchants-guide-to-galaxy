@@ -12,7 +12,7 @@ class InputProcessor {
   var outputValueOfCredits = new mutable.HashMap[String, String]()
   var invalidQueries = new ListBuffer[String]
 
-  def readFromFile(fileName: String): Unit = {
+  def readDataFromFileAndStoreMappings(fileName: String): Unit = {
     var input = new ListBuffer[String]()
     val d = Source.fromFile(fileName).getLines().foreach(
       line => {
@@ -28,13 +28,10 @@ class InputProcessor {
   }
 
   def processLine(line: String) = {
-
     val words = line.split(" ")
-
     val endsRoman = createRegexForInputEndingWithRomanCharacter
-
     words(words.length - 1) match {
-      case endsRoman(blah) =>
+      case endsRoman(roman) =>
         elementToRomanMapping.put(words(0), words(2))
       case "Credits" =>
         mixedToCreditsMapping.put(line, words(words.length - 2))

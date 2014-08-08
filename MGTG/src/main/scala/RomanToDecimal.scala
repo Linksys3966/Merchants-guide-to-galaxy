@@ -79,6 +79,7 @@ class RomanToDecimal {
             decimal += currentvalue
           }
           previousvalue = currentvalue
+        case _=>println("Please Enter a Valid Roman Input")
       }
     })
     decimal
