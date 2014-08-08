@@ -9,6 +9,8 @@ class InputProcessor {
   var missingElementValues = scala.collection.immutable.Map[String, String]()
   var outputValueOfUnits = scala.collection.immutable.Map[String, String]()
   var outputValueOfCredits = scala.collection.immutable.Map[String, String]()
+  var sequenceOfQuestions = scala.collection.immutable.List[Map[String, String]]()
+
 
   def readDataFromFileAndStoreMappings(fileName: String): Unit = {
     var input = new ListBuffer[String]()
@@ -26,6 +28,7 @@ class InputProcessor {
   }
 
   def processLine(line: String) = {
+
     val words = line.split(" ")
     val endsRoman = createRegexForInputEndingWithRomanCharacter
     words(words.length - 1) match {
@@ -38,15 +41,28 @@ class InputProcessor {
     }
   }
 
+  def checkForValidityOfQuestion(question: String): Boolean = {
+    question.length > 30
+
+  }
+
   def processTheQuestionPart(line: String, words: Array[String]) {
     val muchmany = words(1)
     muchmany match {
       case "much" =>
         val question = line.split(" is ")
-        outputValueOfUnits = outputValueOfUnits + (question(1) -> "")
+        outputValueOfUnits = outputValueOfUnits + ( question(1) -> "")
+        sequenceOfQuestions = sequenceOfQuestions.+:(outputValueOfUnits)
+        println("OVU "+outputValueOfUnits)
+        println("S"+sequenceOfQuestions)
+        println("Storing Question")
       case "many" =>
         val question = line.split(" is ")
         outputValueOfCredits = outputValueOfCredits + (question(1) -> "")
+        sequenceOfQuestions = sequenceOfQuestions.+:(outputValueOfCredits)
+        println("OVC "+outputValueOfCredits)
+        println("S"+sequenceOfQuestions)
+        println("Storing Question")
     }
   }
 

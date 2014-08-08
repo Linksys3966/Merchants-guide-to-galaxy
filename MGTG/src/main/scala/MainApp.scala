@@ -9,6 +9,7 @@ object MainApp {
     readInputFromFileAndStoreMappings(outputProcessor)
     calculateMissingValuesForMetals(outputProcessor)
     calcuateExpectedOutputAndDisplayResult(outputProcessor)
+    outputProcessor.readSequenceOfQuestionsAndCalculateAnswer()
 
   }
 
@@ -38,7 +39,7 @@ object MainApp {
   }
 
   def calcuateExpectedOutputAndDisplayResult(outputProcessor: OutputProcessor) {
-    outputProcessor.calculatehowMuchisValue()
-    outputProcessor.calculatehowManyCredits()
+    outputProcessor.calculateOutputOfHowMuchisValueForAllMappings()
+    outputProcessor.calculatehowManyCreditsForAllMappings()
   }
 }
