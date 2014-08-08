@@ -1,15 +1,14 @@
-import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import scala.io.Source
 import scala.util.matching.Regex
 
 class InputProcessor {
 
-  val elementToRomanMapping = new mutable.HashMap[String, String]()
-  val mixedToCreditsMapping = new mutable.HashMap[String, String]()
-  val missingElementValues = new mutable.HashMap[String, String]()
-  val outputValueOfUnits = new mutable.HashMap[String, String]()
-  val outputValueOfCredits = new mutable.HashMap[String, String]()
+  var elementToRomanMapping = scala.collection.immutable.Map[String, String]()
+  var mixedToCreditsMapping = scala.collection.immutable.Map[String, String]()
+  var missingElementValues = scala.collection.immutable.Map[String, String]()
+  var outputValueOfUnits = scala.collection.immutable.Map[String, String]()
+  var outputValueOfCredits = scala.collection.immutable.Map[String, String]()
 
   def readDataFromFileAndStoreMappings(fileName: String): Unit = {
     var input = new ListBuffer[String]()
@@ -31,21 +30,29 @@ class InputProcessor {
     val endsRoman = createRegexForInputEndingWithRomanCharacter
     words(words.length - 1) match {
       case endsRoman(roman) =>
-        elementToRomanMapping.put(words(0), words(2))
+        elementToRomanMapping = elementToRomanMapping + (words(0) -> words(2))
       case "Credits" =>
-        mixedToCreditsMapping.put(line, words(words.length - 2))
-        missingElementValues.put(words(2), "")
+        storeAppropriateMappings(line, words)
       case _ =>
-        val muchmany = words(1)
-        muchmany match {
-          case "much" =>
-            val question = line.split(" is ")
-            outputValueOfUnits.put(question(1), "")
-          case "many" =>
-            val question = line.split(" is ")
-            outputValueOfCredits.put(question(1), "")
-        }
+        processTheQuestionPart(line, words)
     }
+  }
+
+  def processTheQuestionPart(line: String, words: Array[String]) {
+    val muchmany = words(1)
+    muchmany match {
+      case "much" =>
+        val question = line.split(" is ")
+        outputValueOfUnits = outputValueOfUnits + (question(1) -> "")
+      case "many" =>
+        val question = line.split(" is ")
+        outputValueOfCredits = outputValueOfCredits + (question(1) -> "")
+    }
+  }
+
+  def storeAppropriateMappings(line: String, words: Array[String]) {
+    mixedToCreditsMapping = mixedToCreditsMapping + (line -> words(words.length - 2))
+    missingElementValues = missingElementValues + (words(2) -> "")
   }
 
   def createRegexForInputEndingWithRomanCharacter: Regex = {

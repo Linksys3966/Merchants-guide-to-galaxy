@@ -21,8 +21,8 @@ class OutputProcessor(inputProcessor: InputProcessor, romanToDecimal: RomanToDec
     })
   }
 
-  def storeMissingElementValueInMap(splittedInput: Array[String], missingElementValue: Double): Option[String] = {
-    inputProcessor.missingElementValues.put(getElement(splittedInput), missingElementValue.toString)
+  def storeMissingElementValueInMap(splittedInput: Array[String], missingElementValue: Double): Unit = {
+    inputProcessor.missingElementValues = inputProcessor.missingElementValues + (getElement(splittedInput) -> missingElementValue.toString)
   }
 
   def getElement(splittedInput: Array[String]): String = {
@@ -79,7 +79,7 @@ class OutputProcessor(inputProcessor: InputProcessor, romanToDecimal: RomanToDec
     question.map(ques => {
       print(ques + " ")
     })
-    print("is "+answer)
+    print("is " + answer)
     println()
   }
 
