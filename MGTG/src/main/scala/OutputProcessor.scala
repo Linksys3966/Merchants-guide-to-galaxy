@@ -70,8 +70,6 @@ class OutputProcessor(inputProcessor: InputProcessor, romanToDecimal: RomanToDec
     processIndividual(question)
   })
 
-  def displayMessageForInvalidQuery() = println("I have no idea what you are talking about")
-
   def processIndividual(question: Map[String, String]): Iterable[Unit] = question.map(tuple
   => {
     val lengthOfQuestion: Int = calculateLengthOfQuestion(tuple._1)
@@ -85,6 +83,8 @@ class OutputProcessor(inputProcessor: InputProcessor, romanToDecimal: RomanToDec
         printFormattedOutput(question, answer)
     }
   })
+
+  def displayMessageForInvalidQuery() = println("I have no idea what you are talking about")
 
   def calculateLengthOfQuestion(s: String): Int = {
     val splittedInput = splitWith(s, " ")
@@ -132,14 +132,4 @@ class OutputProcessor(inputProcessor: InputProcessor, romanToDecimal: RomanToDec
   def getRegexForElementOnEarth: Regex = "([A-Z][a-z]+)".r
 
   def getRegexForIntergalasticUnit: Regex = "([a-z]+{0,4})".r
-
-  def calculateHowManyCreditsForAllMappings() = {
-    val mappings = inputProcessor.outputValueOfCredits
-
-    mappings.map(mapping => {
-      val (question: Array[String], answer: Double) = calculateHowManyCreditsForIndividualMapping(mapping)
-      printFormattedOutput(question, answer)
-    })
-  }
-
 }
