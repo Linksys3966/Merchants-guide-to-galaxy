@@ -26,14 +26,6 @@ class OutputProcessor(inputProcessor: InputProcessor, romanToDecimal: RomanToDec
     (splittedInput, missingElementValue)
   }
 
-  def storeMissingElementValueInMap(splittedInput: Array[String], missingElementValue: Double): Unit = {
-    inputProcessor.missingElementValues = inputProcessor.missingElementValues + (extractElementFrom(splittedInput) -> missingElementValue.toString)
-  }
-
-  def extractElementFrom(splittedInput: Array[String]): String = {
-    splittedInput(2)
-  }
-
   def logicForComputingMissingValue(credits: Double, decimalValue: Int): Double = {
     val missingElementValue: Double = credits / decimalValue
     missingElementValue
@@ -66,31 +58,50 @@ class OutputProcessor(inputProcessor: InputProcessor, romanToDecimal: RomanToDec
     intergalasticInput.toString()
   }
 
-  def calculateLengthOfArray(s: String): Int = {
-    val splittedInput = splitWith(s, " ")
-    splittedInput.length
+  def storeMissingElementValueInMap(splittedInput: Array[String], missingElementValue: Double): Unit = {
+    inputProcessor.missingElementValues = inputProcessor.missingElementValues + (extractElementFrom(splittedInput) -> missingElementValue.toString)
+  }
+
+  def extractElementFrom(splittedInput: Array[String]): String = {
+    splittedInput(2)
   }
 
   def readSequenceOfQuestionsAndCalculateAnswer() = inputProcessor.sequenceOfQuestions.map(question => {
-    val x = question
-    question.map(s => {
-      val length: Int = calculateLengthOfArray(s._1)
-      length match {
-        case 3 =>
-          val (question: Array[String], answer: Double) = calculateHowManyCreditsForIndividualMapping(s)
-          printFormattedOutput(question, answer)
-        case 4 =>
-          val (question: Array[String], answer: Double) = calculateHowMuchIsTheValueForIndividualMapping(s)
-          printFormattedOutput(question, answer)
-      }
-    })
+    processIndividual(question)
   })
+
+  def processIndividual(question: Map[String, String]): Iterable[Unit] = question.map(tuple
+  => {
+    val lengthOfQuestion: Int = calculateLengthOfQuestion(tuple._1)
+    lengthOfQuestion match {
+      case 3 =>
+        val (question: Array[String], answer: Double) = calculateHowManyCreditsForIndividualMapping(tuple)
+        printFormattedOutput(question, answer)
+      case 4 =>
+        val (question: Array[String], answer: Double) = calculateHowMuchIsTheValueForIndividualMapping(tuple)
+        printFormattedOutput(question, answer)
+    }
+  })
+
+  def calculateLengthOfQuestion(s: String): Int = {
+    val splittedInput = splitWith(s, " ")
+    splittedInput.length
+  }
 
   def calculateHowMuchIsTheValueForIndividualMapping(mapping: (String, String)): (Array[String], Double) = {
     val question = extractQuestion(mapping._1).split(" ")
     val romanInput: String = getRomanInputFromCollectionOfIntergalasticUnits(question)
     val answer = romanToDecimal.convertRomanToDecimal(romanInput.toString())
     (question, answer)
+  }
+
+  def calculateHowManyCreditsForAllMappings() = {
+    val mappings = inputProcessor.outputValueOfCredits
+
+    mappings.map(mapping => {
+      val (question: Array[String], answer: Double) = calculateHowManyCreditsForIndividualMapping(mapping)
+      printFormattedOutput(question, answer)
+    })
   }
 
   def printFormattedOutput(question: Array[String], answer: Double) = {
@@ -101,25 +112,13 @@ class OutputProcessor(inputProcessor: InputProcessor, romanToDecimal: RomanToDec
     println()
   }
 
-  def extractQuestion(tuple: String): String = tuple.substring(0, tuple.length - 1)
-
-  def calculatehowManyCreditsForAllMappings() = {
-    val mappings = inputProcessor.outputValueOfCredits
-
-    mappings.map(mapping => {
-      val (question: Array[String], answer: Double) = calculateHowManyCreditsForIndividualMapping(mapping)
-      printFormattedOutput(question, answer)
-    })
-  }
-
-
   def calculateHowManyCreditsForIndividualMapping(mapping: (String, String)): (Array[String], Double) = {
     val question = extractQuestion(mapping._1).split(" ")
     val romanInput = new StringBuilder
     var elementValue: Double = 0
     val unit = getRegexForIntergalasticUnit
     val element = getRegexForElementOnEarth
-    def mapQuestiontoGetRomanAndElementValue {
+    def mapQuestiontoGetRomanAndElementValue() {
       question.map {
         case unit(unit) =>
           romanInput.append(getRomanEquivalentForGivenIntergalasticInput(unit))
@@ -134,12 +133,10 @@ class OutputProcessor(inputProcessor: InputProcessor, romanToDecimal: RomanToDec
     (question, answer)
   }
 
-  def getRegexForElementOnEarth: Regex = {
-    "([A-Z][a-z]+)".r
-  }
+  def extractQuestion(tuple: String): String = tuple.substring(0, tuple.length - 1)
 
-  def getRegexForIntergalasticUnit: Regex = {
-    "([a-z]+{0,4})".r
-  }
+  def getRegexForElementOnEarth: Regex = "([A-Z][a-z]+)".r
+
+  def getRegexForIntergalasticUnit: Regex = "([a-z]+{0,4})".r
 
 }

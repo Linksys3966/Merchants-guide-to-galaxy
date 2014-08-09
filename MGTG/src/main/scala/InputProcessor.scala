@@ -49,11 +49,6 @@ class InputProcessor {
     elementToRomanMapping = elementToRomanMapping + (words(0) -> words(2))
   }
 
-  def checkForValidityOfQuestion(question: String): Boolean = {
-    question.length > 30
-
-  }
-
   def processTheQuestionPart(line: String, words: Array[String]) {
     val muchmany = words(1)
     muchmany match {
@@ -77,5 +72,10 @@ class InputProcessor {
 
   def createRegexForInputEndingWithRomanCharacter: Regex = {
     "([IVLX])".r
+  }
+
+  def checkForValidityOfQuestion(question: String): Boolean = {
+    question.length > 30
+
   }
 }
