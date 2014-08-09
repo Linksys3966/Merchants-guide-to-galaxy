@@ -8,9 +8,12 @@ object MainApp {
     addRomanToDecimalMappings(romanToDecimal)
     readInputFromFileAndStoreMappings(outputProcessor)
     calculateMissingValuesForMetals(outputProcessor)
-    calcuateExpectedOutputAndDisplayResult(outputProcessor)
-    outputProcessor.readSequenceOfQuestionsAndCalculateAnswer()
+    readSequenceOfQuestionsAndCalculateAnswer(outputProcessor)
 
+  }
+
+  def readSequenceOfQuestionsAndCalculateAnswer(outputProcessor: OutputProcessor) {
+    outputProcessor.readSequenceOfQuestionsAndCalculateAnswer()
   }
 
   def factoryForCreatingObjects: (InputProcessor, RomanToDecimal, OutputProcessor) = {
@@ -35,11 +38,6 @@ object MainApp {
   }
 
   def calculateMissingValuesForMetals(outputProcessor: OutputProcessor) {
-    outputProcessor.calculateMissingValues()
-  }
-
-  def calcuateExpectedOutputAndDisplayResult(outputProcessor: OutputProcessor) {
-    outputProcessor.calculateOutputOfHowMuchisValueForAllMappings()
-    outputProcessor.calculatehowManyCreditsForAllMappings()
+    outputProcessor.calculateMissingValuesForAllMappings()
   }
 }

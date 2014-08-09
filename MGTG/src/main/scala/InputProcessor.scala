@@ -29,16 +29,24 @@ class InputProcessor {
 
   def processLine(line: String) = {
 
-    val words = line.split(" ")
+    val splittedInput = line.split(" ")
     val endsRoman = createRegexForInputEndingWithRomanCharacter
-    words(words.length - 1) match {
+    extractTheLastWordToMatchFrom(splittedInput) match {
       case endsRoman(roman) =>
-        elementToRomanMapping = elementToRomanMapping + (words(0) -> words(2))
+        storeElementToRomanMapping(splittedInput)
       case "Credits" =>
-        storeAppropriateMappings(line, words)
+        storeAppropriateMappings(line, splittedInput)
       case _ =>
-        processTheQuestionPart(line, words)
+        processTheQuestionPart(line, splittedInput)
     }
+  }
+
+  def extractTheLastWordToMatchFrom(splittedInput: Array[String]): String = {
+    splittedInput(splittedInput.length - 1)
+  }
+
+  def storeElementToRomanMapping(words: Array[String]) {
+    elementToRomanMapping = elementToRomanMapping + (words(0) -> words(2))
   }
 
   def checkForValidityOfQuestion(question: String): Boolean = {
@@ -51,18 +59,14 @@ class InputProcessor {
     muchmany match {
       case "much" =>
         val question = line.split(" is ")
-        outputValueOfUnits = outputValueOfUnits + ( question(1) -> "")
-        sequenceOfQuestions = sequenceOfQuestions.+:(outputValueOfUnits)
-        println("OVU "+outputValueOfUnits)
-        println("S"+sequenceOfQuestions)
-        println("Storing Question")
+        val x = Map(question(1) -> "")
+        sequenceOfQuestions = sequenceOfQuestions.:+(x)
+        outputValueOfUnits = outputValueOfUnits + (question(1) -> "")
       case "many" =>
         val question = line.split(" is ")
+        val x = Map(question(1) -> "")
+        sequenceOfQuestions = sequenceOfQuestions.:+(x)
         outputValueOfCredits = outputValueOfCredits + (question(1) -> "")
-        sequenceOfQuestions = sequenceOfQuestions.+:(outputValueOfCredits)
-        println("OVC "+outputValueOfCredits)
-        println("S"+sequenceOfQuestions)
-        println("Storing Question")
     }
   }
 

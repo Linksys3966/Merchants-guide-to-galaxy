@@ -6,15 +6,15 @@ class OutputProcessor(inputProcessor: InputProcessor, romanToDecimal: RomanToDec
     inputProcessor.readDataFromFileAndStoreMappings("/Users/vivekpatil/Data.txt")
   }
 
-  def calculateMissingValues() = {
+  def calculateMissingValuesForAllMappings() = {
     val mappings = inputProcessor.mixedToCreditsMapping
     mappings.map(mappingTuple => {
-      val (splittedInput: Array[String], missingElementValue: Double) = calculateMissingValueForGivenMapping(mappingTuple)
+      val (splittedInput: Array[String], missingElementValue: Double) = calculateMissingValueForIndividualMapping(mappingTuple)
       storeMissingElementValueInMap(splittedInput, missingElementValue)
     })
   }
 
-  def calculateMissingValueForGivenMapping(mappingTuple: (String, String)): (Array[String], Double) = {
+  def calculateMissingValueForIndividualMapping(mappingTuple: (String, String)): (Array[String], Double) = {
     val mixedInput = mappingTuple._1
     val credits = mappingTuple._2.toDouble
     val splittedInput = splitWith(mixedInput, " ")
@@ -27,10 +27,10 @@ class OutputProcessor(inputProcessor: InputProcessor, romanToDecimal: RomanToDec
   }
 
   def storeMissingElementValueInMap(splittedInput: Array[String], missingElementValue: Double): Unit = {
-    inputProcessor.missingElementValues = inputProcessor.missingElementValues + (extractElemntFrom(splittedInput) -> missingElementValue.toString)
+    inputProcessor.missingElementValues = inputProcessor.missingElementValues + (extractElementFrom(splittedInput) -> missingElementValue.toString)
   }
 
-  def extractElemntFrom(splittedInput: Array[String]): String = {
+  def extractElementFrom(splittedInput: Array[String]): String = {
     splittedInput(2)
   }
 
@@ -66,22 +66,27 @@ class OutputProcessor(inputProcessor: InputProcessor, romanToDecimal: RomanToDec
     intergalasticInput.toString()
   }
 
-  def readSequenceOfQuestionsAndCalculateAnswer() = {
-    inputProcessor.sequenceOfQuestions.map(question => {
-      val x = question
-      println("X " + x)
-    })
+  def calculateLengthOfArray(s: String): Int = {
+    val splittedInput = splitWith(s, " ")
+    splittedInput.length
   }
 
-  def calculateOutputOfHowMuchisValueForAllMappings() = {
-    val mappings = inputProcessor.outputValueOfUnits
-    mappings.map(mapping => {
-      val (question: Array[String], answer: Int) = calculateHowMuchIsTheValueForIndividualMapping(mapping)
-      printFormattedOutput(question, answer)
+  def readSequenceOfQuestionsAndCalculateAnswer() = inputProcessor.sequenceOfQuestions.map(question => {
+    val x = question
+    question.map(s => {
+      val length: Int = calculateLengthOfArray(s._1)
+      length match {
+        case 3 =>
+          val (question: Array[String], answer: Double) = calculateHowManyCreditsForIndividualMapping(s)
+          printFormattedOutput(question, answer)
+        case 4 =>
+          val (question: Array[String], answer: Double) = calculateHowMuchIsTheValueForIndividualMapping(s)
+          printFormattedOutput(question, answer)
+      }
     })
-  }
+  })
 
-  def calculateHowMuchIsTheValueForIndividualMapping(mapping: (String, String)): (Array[String], Int) = {
+  def calculateHowMuchIsTheValueForIndividualMapping(mapping: (String, String)): (Array[String], Double) = {
     val question = extractQuestion(mapping._1).split(" ")
     val romanInput: String = getRomanInputFromCollectionOfIntergalasticUnits(question)
     val answer = romanToDecimal.convertRomanToDecimal(romanInput.toString())
