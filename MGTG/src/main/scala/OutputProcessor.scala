@@ -70,10 +70,13 @@ class OutputProcessor(inputProcessor: InputProcessor, romanToDecimal: RomanToDec
     processIndividual(question)
   })
 
+  def displayMessageForInvalidQuery() = println("I have no idea what you are talking about")
+
   def processIndividual(question: Map[String, String]): Iterable[Unit] = question.map(tuple
   => {
     val lengthOfQuestion: Int = calculateLengthOfQuestion(tuple._1)
     lengthOfQuestion match {
+      case 2 => displayMessageForInvalidQuery()
       case 3 =>
         val (question: Array[String], answer: Double) = calculateHowManyCreditsForIndividualMapping(tuple)
         printFormattedOutput(question, answer)
@@ -95,14 +98,7 @@ class OutputProcessor(inputProcessor: InputProcessor, romanToDecimal: RomanToDec
     (question, answer)
   }
 
-  def calculateHowManyCreditsForAllMappings() = {
-    val mappings = inputProcessor.outputValueOfCredits
-
-    mappings.map(mapping => {
-      val (question: Array[String], answer: Double) = calculateHowManyCreditsForIndividualMapping(mapping)
-      printFormattedOutput(question, answer)
-    })
-  }
+  def extractQuestion(tuple: String): String = tuple.substring(0, tuple.length - 1)
 
   def printFormattedOutput(question: Array[String], answer: Double) = {
     question.map(ques => {
@@ -133,10 +129,17 @@ class OutputProcessor(inputProcessor: InputProcessor, romanToDecimal: RomanToDec
     (question, answer)
   }
 
-  def extractQuestion(tuple: String): String = tuple.substring(0, tuple.length - 1)
-
   def getRegexForElementOnEarth: Regex = "([A-Z][a-z]+)".r
 
   def getRegexForIntergalasticUnit: Regex = "([a-z]+{0,4})".r
+
+  def calculateHowManyCreditsForAllMappings() = {
+    val mappings = inputProcessor.outputValueOfCredits
+
+    mappings.map(mapping => {
+      val (question: Array[String], answer: Double) = calculateHowManyCreditsForIndividualMapping(mapping)
+      printFormattedOutput(question, answer)
+    })
+  }
 
 }

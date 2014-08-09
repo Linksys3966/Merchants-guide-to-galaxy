@@ -49,24 +49,47 @@ class InputProcessor {
     elementToRomanMapping = elementToRomanMapping + (words(0) -> words(2))
   }
 
-  def processTheQuestionPart(line: String, words: Array[String]) {
-    val muchmany = words(1)
+  def mappingForInvalidQuery: Map[String,String] = Map("Invalid Query"->"")
+
+  def processTheQuestionPart(line: String, splittedInput: Array[String]) {
+    val muchmany = extractThePartUsedForDecidingTheTypeOfQuestion(splittedInput)
+    val regexForHowMuch = createRegexForQuestionOfTypeHowMuch()
+    val regexForHowMany = createRegexForQuestionOfTypeHowMany()
     muchmany match {
-      case "much" =>
-        val question = line.split(" is ")
-        val x = Map(question(1) -> "")
-        sequenceOfQuestions = sequenceOfQuestions.:+(x)
+      case regexForHowMuch(x) =>
+        val question: Array[String] = extractAndStoreMappingForQuestion(line)
         outputValueOfUnits = outputValueOfUnits + (question(1) -> "")
-      case "many" =>
-        val question = line.split(" is ")
-        val x = Map(question(1) -> "")
-        sequenceOfQuestions = sequenceOfQuestions.:+(x)
+      case regexForHowMany(x) =>
+        val question: Array[String] = extractAndStoreMappingForQuestion(line)
         outputValueOfCredits = outputValueOfCredits + (question(1) -> "")
+      case _=>
+        sequenceOfQuestions = sequenceOfQuestions.:+(mappingForInvalidQuery)
     }
   }
 
-  def storeAppropriateMappings(line: String, words: Array[String]) {
-    mixedToCreditsMapping = mixedToCreditsMapping + (line -> words(words.length - 2))
+  def extractThePartUsedForDecidingTheTypeOfQuestion(splittedInput: Array[String]): String = {
+    splittedInput(1) + " " + splittedInput(2)
+  }
+
+  def createRegexForQuestionOfTypeHowMuch(): Regex = "(much is)".r
+
+  def createRegexForQuestionOfTypeHowMany(): Regex = "(many Credits)".r
+
+  def extractAndStoreMappingForQuestion(line: String): Array[String] = {
+    val question = splitWith(line, " is ")
+    val mapping = Map(question(1) -> "")
+    storeMappingForSequenceOfQuestions(mapping)
+    question
+  }
+
+  def splitWith(line: String, criteria: String): Array[String] = line.split(criteria)
+
+  def storeMappingForSequenceOfQuestions(x: Map[String, String]) {
+    sequenceOfQuestions = sequenceOfQuestions.:+(x)
+  }
+
+  def storeAppropriateMappings(mixedInput: String, words: Array[String]) {
+    mixedToCreditsMapping = mixedToCreditsMapping + (mixedInput -> words(words.length - 2))
     missingElementValues = missingElementValues + (words(2) -> "")
   }
 
