@@ -48,7 +48,7 @@ class InputProcessor {
   }
 
   def processTheQuestionPart(line: String, splittedInput: Array[String]) {
-    val muchmany = extractThePartUsedForDecidingTheTypeOfQuestion(splittedInput)
+    val muchmany = extractThePartUsedForDecidingTheTypeOfQuestionFrom(splittedInput)
     val regexForHowMuch = createRegexForQuestionOfTypeHowMuch()
     val regexForHowMany = createRegexForQuestionOfTypeHowMany()
     muchmany match {
@@ -65,7 +65,7 @@ class InputProcessor {
 
   def mappingForInvalidQuery: Map[String, String] = Map("Invalid Query" -> "")
 
-  def extractThePartUsedForDecidingTheTypeOfQuestion(splittedInput: Array[String]): String = {
+  def extractThePartUsedForDecidingTheTypeOfQuestionFrom(splittedInput: Array[String]): String = {
     splittedInput(1) + " " + splittedInput(2)
   }
 
@@ -84,6 +84,7 @@ class InputProcessor {
 
   def storeMappingForSequenceOfQuestions(x: Map[String, String]) {
     sequenceOfQuestions = sequenceOfQuestions.:+(x)
+    Traversable
   }
 
   def storeAppropriateMappings(mixedInput: String, words: Array[String]) {
@@ -93,10 +94,5 @@ class InputProcessor {
 
   def createRegexForInputEndingWithRomanCharacter: Regex = {
     "([IVLX])".r
-  }
-
-  def checkForValidityOfQuestion(question: String): Boolean = {
-    question.length > 30
-
   }
 }
