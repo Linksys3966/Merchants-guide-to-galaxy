@@ -1,4 +1,4 @@
-import scala.util.matching.Regex
+
 
 class OutputProcessor(inputProcessor: InputProcessor, romanToDecimal: RomanToDecimal) {
 
@@ -94,7 +94,7 @@ class OutputProcessor(inputProcessor: InputProcessor, romanToDecimal: RomanToDec
   def calculateHowMuchIsTheValueForIndividualMapping(mapping: (String, String)): (Array[String], Double) = {
     val question = extractQuestion(mapping._1).split(" ")
     val romanInput: String = getRomanInputFromCollectionOfIntergalasticUnits(question)
-    val answer = romanToDecimal.convertRomanToDecimal(romanInput.toString())
+    val answer = romanToDecimal.convertRomanToDecimal(romanInput.toString)
     (question, answer)
   }
 
@@ -123,7 +123,7 @@ class OutputProcessor(inputProcessor: InputProcessor, romanToDecimal: RomanToDec
         case _ =>
       }
     }
-    mapQuestiontoGetRomanAndElementValue
+    mapQuestiontoGetRomanAndElementValue()
     val decimalValue = romanToDecimal.convertRomanToDecimal(romanInput.toString())
     val answer = decimalValue * elementValue
     (question, answer)

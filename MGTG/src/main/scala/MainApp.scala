@@ -1,6 +1,3 @@
-/**
- * Created by vivekpatil on 8/6/14.
- */
 object MainApp {
 
   def main(args: Array[String]) {

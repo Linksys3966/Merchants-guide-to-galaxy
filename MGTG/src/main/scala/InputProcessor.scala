@@ -41,15 +41,11 @@ class InputProcessor {
     }
   }
 
-  def extractTheLastWordToMatchFrom(splittedInput: Array[String]): String = {
-    splittedInput(splittedInput.length - 1)
-  }
+  def extractTheLastWordToMatchFrom(splittedInput: Array[String]): String = splittedInput(splittedInput.length - 1)
 
   def storeElementToRomanMapping(words: Array[String]) {
     elementToRomanMapping = elementToRomanMapping + (words(0) -> words(2))
   }
-
-  def mappingForInvalidQuery: Map[String,String] = Map("Invalid Query"->"")
 
   def processTheQuestionPart(line: String, splittedInput: Array[String]) {
     val muchmany = extractThePartUsedForDecidingTheTypeOfQuestion(splittedInput)
@@ -62,10 +58,12 @@ class InputProcessor {
       case regexForHowMany(x) =>
         val question: Array[String] = extractAndStoreMappingForQuestion(line)
         outputValueOfCredits = outputValueOfCredits + (question(1) -> "")
-      case _=>
+      case _ =>
         sequenceOfQuestions = sequenceOfQuestions.:+(mappingForInvalidQuery)
     }
   }
+
+  def mappingForInvalidQuery: Map[String, String] = Map("Invalid Query" -> "")
 
   def extractThePartUsedForDecidingTheTypeOfQuestion(splittedInput: Array[String]): String = {
     splittedInput(1) + " " + splittedInput(2)
