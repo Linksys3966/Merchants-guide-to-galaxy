@@ -3,7 +3,7 @@ object MainApp {
   def main(args: Array[String]) {
     val (inputprocessor: InputProcessor, romanToDecimal: RomanToDecimal, outputProcessor: OutputProcessor) = factoryForCreatingObjects
     addRomanToDecimalMappings(romanToDecimal)
-    readInputFromFileAndStoreMappings(outputProcessor, inputprocessor)
+    readInputFromFileAndStoreMappings(inputprocessor)
     calculateMissingValuesForMetals(outputProcessor, inputprocessor, romanToDecimal)
     readSequenceOfQuestionsAndCalculateAnswer(outputProcessor, inputprocessor, romanToDecimal)
   }
@@ -29,8 +29,8 @@ object MainApp {
     romanToDecimal.addRomanToDecimalMappings("M", 1000)
   }
 
-  def readInputFromFileAndStoreMappings(outputProcessor: OutputProcessor, inputProcessor: InputProcessor) {
-    outputProcessor.readFileAndStoreMappings(inputProcessor)
+  def readInputFromFileAndStoreMappings(inputProcessor: InputProcessor) {
+    inputProcessor.readDataFromFileAndStoreMappings("/Users/vivekpatil/Data.txt")
   }
 
   def calculateMissingValuesForMetals(outputProcessor: OutputProcessor, inputProcessor: InputProcessor, romanToDecimal: RomanToDecimal) {

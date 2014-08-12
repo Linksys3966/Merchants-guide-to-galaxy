@@ -2,10 +2,6 @@
 
 class OutputProcessor() {
 
-  def readFileAndStoreMappings(inputProcessor: InputProcessor) {
-    inputProcessor.readDataFromFileAndStoreMappings("/Users/vivekpatil/Data.txt")
-  }
-
   def calculateMissingValuesForAllMappings(inputProcessor: InputProcessor, romanToDecimal: RomanToDecimal) = {
     val mappings = inputProcessor.mixedToCreditsMapping
     mappings.map(mappingTuple => {
@@ -17,36 +13,22 @@ class OutputProcessor() {
   def calculateMissingValueForIndividualMapping(mappingTuple: (String, String), romanToDecimal: RomanToDecimal, inputProcessor: InputProcessor): (Array[String], Double) = {
     val mixedInput = mappingTuple._1
     val credits = mappingTuple._2.toDouble
-    val splittedInput = splitWith(mixedInput, " ")
-    val intergalsaticInputs = getIntergalasticInputFrom(splittedInput)
-    val collectionOfIntergalasticUnits = splitWith(intergalsaticInputs, "#")
-    val romanInput: String = getRomanInputFromCollectionOfIntergalasticUnits(collectionOfIntergalasticUnits, inputProcessor)
+    val splittedInput = Utility.splitWith(mixedInput, " ")
+    val intergalsaticInputs = Extractor.getIntergalasticInputFrom(splittedInput)
+    val collectionOfIntergalasticUnits = Utility.splitWith(intergalsaticInputs, "#")
+    val romanInput: String = Extractor.getRomanInputFromCollectionOfIntergalasticUnits(collectionOfIntergalasticUnits, inputProcessor)
     val decimalValue = romanToDecimal.convertRomanToDecimal(romanInput)
     val missingElementValue: Double = logicForComputingMissingValue(credits, decimalValue)
     (splittedInput, missingElementValue)
   }
 
-  def logicForComputingMissingValue(credits: Double, decimalValue: Int): Double = {
+  def logicForComputingMissingValue(credits: Double, decimalValue: Double): Double = {
     val missingElementValue: Double = credits / decimalValue
     missingElementValue
   }
 
-  def getIntergalasticInputFrom(mixedInput: Array[String]): String = {
-    val intergalasticInput = new StringBuilder
-    for (i <- 0 until mixedInput.length) {
-      if (i < 2)
-        intergalasticInput.append(mixedInput(i) + "#")
-
-    }
-    intergalasticInput.toString()
-  }
-
   def storeMissingElementValueInMap(splittedInput: Array[String], missingElementValue: Double, inputProcessor: InputProcessor): Unit = {
-    inputProcessor.missingElementValues = inputProcessor.missingElementValues + (extractElementFrom(splittedInput) -> missingElementValue.toString)
-  }
-
-  def extractElementFrom(splittedInput: Array[String]): String = {
-    splittedInput(2)
+    inputProcessor.missingElementValues = inputProcessor.missingElementValues + (Extractor.extractElementFrom(splittedInput) -> missingElementValue.toString)
   }
 
   def readSequenceOfQuestionsAndCalculateAnswer(inputProcessor: InputProcessor, romanToDecimal: RomanToDecimal) = inputProcessor.sequenceOfQuestions.map(question => {
@@ -57,79 +39,55 @@ class OutputProcessor() {
   => {
     val lengthOfQuestion: Int = calculateLengthOfQuestion(tuple._1)
     lengthOfQuestion match {
-      case 2 => displayMessageForInvalidQuery()
+      case 2 => Utility.displayMessageForInvalidQuery()
       case 3 =>
-        val (question: Array[String], answer: Double) = calculateHowManyCreditsForIndividualMapping(tuple, inputProcessor, romanToDecimal)
-        printFormattedOutput(question, answer)
+        val (question: Array[String], answer: Double) = calculateConversionBetweenMetals(tuple, inputProcessor, romanToDecimal)
+        Utility.printFormattedOutputForConversionBetweenMetals(question, answer.toString)
       case 4 =>
+        val (question: Array[String], answer: Double) = calculateHowManyCreditsForIndividualMapping(tuple, inputProcessor, romanToDecimal)
+        Utility.printFormattedOutput(question, answer.toInt.toString + " Credits")
+      case 5 =>
         val (question: Array[String], answer: Double) = calculateHowMuchIsTheValueForIndividualMapping(tuple, romanToDecimal, inputProcessor)
-        printFormattedOutput(question, answer)
+        Utility.printFormattedOutput(question, answer.toInt.toString)
     }
   })
 
-  def displayMessageForInvalidQuery() = println("I have no idea what you are talking about")
+  def calculateConversionBetweenMetals(mapping: (String, String), inputProcessor: InputProcessor, romanToDecimal: RomanToDecimal): (Array[String], Double) = {
+    val question = Extractor.extractQuestion(mapping._1).split(" ")
+    val valueToBeConverted: Double = inputProcessor.missingElementValues(question(0)).toDouble
+    val (romanInput: StringBuilder, elementValue: Double) = Extractor.extractRomanAndElementValue(inputProcessor, question)
+    val decimalValue = romanToDecimal.convertRomanToDecimal(romanInput.toString())
+    val answer: Double = logicForComputingConversion(valueToBeConverted, elementValue, decimalValue)
+    (question, answer)
+  }
 
-  def calculateLengthOfQuestion(s: String): Int = {
-    val splittedInput = splitWith(s, " ")
+  def logicForComputingConversion(valueToBeConverted: Double, elementValue: Double, decimalValue: Double): Double = {
+    logicForComputingCredits(elementValue, decimalValue) / valueToBeConverted
+  }
+
+  def logicForComputingCredits(elementValue: Double, decimalValue: Double): Double = {
+    decimalValue * elementValue
+  }
+
+  def calculateLengthOfQuestion(question: String): Int = if (question.contains(" is ")) 3
+  else {
+    val splittedInput = Utility.splitWith(question, " ")
     splittedInput.length
   }
 
-  def splitWith(mixedInput: String, splitCriteria: String): Array[String] = {
-    mixedInput.split(splitCriteria)
-  }
-
   def calculateHowMuchIsTheValueForIndividualMapping(mapping: (String, String), romanToDecimal: RomanToDecimal, inputProcessor: InputProcessor): (Array[String], Double) = {
-    val question = extractQuestion(mapping._1).split(" ")
-    val romanInput: String = getRomanInputFromCollectionOfIntergalasticUnits(question, inputProcessor)
+    val question = Extractor.extractQuestion(mapping._1).split(" ")
+    val romanInput: String = Extractor.getRomanInputFromCollectionOfIntergalasticUnits(question, inputProcessor)
     val answer = romanToDecimal.convertRomanToDecimal(romanInput.toString)
     (question, answer)
   }
 
-  def getRomanInputFromCollectionOfIntergalasticUnits(collectionOfIntergalasticUnits: Array[String], inputProcessor: InputProcessor): String = {
-    val romanInput = new StringBuilder
-    collectionOfIntergalasticUnits.map(
-      interGalasticUnit => {
-        romanInput.append(getRomanEquivalentForGivenIntergalasticInput(interGalasticUnit, inputProcessor))
-      })
-    romanInput.toString()
-  }
-
-  def getRomanEquivalentForGivenIntergalasticInput(interGalasticUnit: String, inputProcessor: InputProcessor): String = {
-    inputProcessor.elementToRomanMapping(interGalasticUnit)
-  }
-
-  def extractQuestion(tuple: String): String = tuple.substring(0, tuple.length - 1)
-
-  def printFormattedOutput(question: Array[String], answer: Double) = {
-    question.map(ques => {
-      print(ques + " ")
-    })
-    print("is " + answer)
-    println()
-  }
-
   def calculateHowManyCreditsForIndividualMapping(mapping: (String, String), inputProcessor: InputProcessor, romanToDecimal: RomanToDecimal): (Array[String], Double) = {
-    val question = extractQuestion(mapping._1).split(" ")
-    val romanInput = new StringBuilder
-    var elementValue: Double = 0
-    val unit = getRegexForIntergalasticUnit
-    val element = getRegexForElementOnEarth
-    def mapQuestiontoGetRomanAndElementValue() {
-      question.map {
-        case unit(unit) =>
-          romanInput.append(getRomanEquivalentForGivenIntergalasticInput(unit, inputProcessor))
-        case element(element) =>
-          elementValue = inputProcessor.missingElementValues(element).toDouble
-        case _ =>
-      }
-    }
-    mapQuestiontoGetRomanAndElementValue()
+
+    val question = Extractor.extractQuestion(mapping._1).split(" ")
+    val (romanInput: StringBuilder, elementValue: Double) = Extractor.extractRomanAndElementValue(inputProcessor, question)
     val decimalValue = romanToDecimal.convertRomanToDecimal(romanInput.toString())
-    val answer = decimalValue * elementValue
+    val answer = logicForComputingCredits(elementValue, decimalValue)
     (question, answer)
   }
-
-  def getRegexForElementOnEarth: Regex = "([A-Z][a-z]+)".r
-
-  def getRegexForIntergalasticUnit: Regex = "([a-z]+{0,4})".r
 }

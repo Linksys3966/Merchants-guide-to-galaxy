@@ -10,9 +10,10 @@ class RomanToDecimal {
     romanDecimalPairs.put(roman, decimal)
   }
 
-  def convertRomanToDecimal(romanString: String): Int = {
-    var decimal: Int = 0
-    var previousvalue: Int = 0
+  def convertRomanToDecimal(romanString: String): Double = {
+    var decimal: Double = 0
+    var previousvalue: Double = 0
+    var currentvalue: Int = 0
 
     def checkSubstractionLogic(currentvalue: Int) = {
       if (currentvalue > previousvalue) {
@@ -24,34 +25,30 @@ class RomanToDecimal {
       previousvalue = currentvalue
     }
 
-
-    romanString.map(romanCharacter => {
-      romanCharacter match {
-        case 'I' => {
-          val currentvalue = romanDecimalPairs(romanCharacter.toString)
-          checkSubstractionLogic(currentvalue)
-        }
-        case 'V' =>
-          val currentvalue = romanDecimalPairs(romanCharacter.toString)
-          checkSubstractionLogic(currentvalue)
-        case 'X' =>
-          val currentvalue = romanDecimalPairs(romanCharacter.toString)
-          checkSubstractionLogic(currentvalue)
-        case 'L' =>
-          val currentvalue = romanDecimalPairs(romanCharacter.toString)
-          checkSubstractionLogic(currentvalue)
-        case 'C' =>
-          val currentvalue = romanDecimalPairs(romanCharacter.toString)
-          checkSubstractionLogic(currentvalue)
-        case 'D' =>
-          val currentvalue = romanDecimalPairs(romanCharacter.toString)
-          checkSubstractionLogic(currentvalue)
-        case 'M' =>
-          val currentvalue = romanDecimalPairs(romanCharacter.toString)
-          checkSubstractionLogic(currentvalue)
-        case _ => println("Please Enter a Valid Roman Input")
-      }
-    })
+    romanString.map {
+      case romanCharacter@'I' =>
+        currentvalue = romanDecimalPairs(romanCharacter.toString)
+        checkSubstractionLogic(currentvalue)
+      case romanCharacter@'V' =>
+        currentvalue = romanDecimalPairs(romanCharacter.toString)
+        checkSubstractionLogic(currentvalue)
+      case romanCharacter@'X' =>
+        currentvalue = romanDecimalPairs(romanCharacter.toString)
+        checkSubstractionLogic(currentvalue)
+      case romanCharacter@'L' =>
+        currentvalue = romanDecimalPairs(romanCharacter.toString)
+        checkSubstractionLogic(currentvalue)
+      case romanCharacter@'C' =>
+        currentvalue = romanDecimalPairs(romanCharacter.toString)
+        checkSubstractionLogic(currentvalue)
+      case romanCharacter@'D' =>
+        currentvalue = romanDecimalPairs(romanCharacter.toString)
+        checkSubstractionLogic(currentvalue)
+      case romanCharacter@'M' =>
+        currentvalue = romanDecimalPairs(romanCharacter.toString)
+        checkSubstractionLogic(currentvalue)
+      case _ => println("Please Enter a Valid Roman Input")
+    }
     decimal
   }
 }
